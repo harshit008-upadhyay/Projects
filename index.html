@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Weather APP</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="card">
+      <div class="search">
+        <input type="text" id="city-input" placeholder="Enter city name" spellcheck="false">
+        <button id="search-btn"><img src="images/search.png" alt="Search"></button>
+      </div>  
+      
+      <div class="weather">
+        <img src="images/rain.png" class="weather-icon" id="weather-icon" alt="Weather Icon">   
+        <h1 class="temp" id="temperature">22°C</h1>
+        <h2 class="city" id="city-name">New York</h2>
+        
+        <div class="details">
+          <div class="col">
+            <img src="images/humidity.png" alt="Humidity Icon">
+            <div>
+              <p class="humidity" id="humidity">50%</p>
+              <p>Humidity</p>
+            </div>
+          </div>
+          
+          <div class="col">
+            <img src="images/wind.png" alt="Wind Icon">
+            <div>
+              <p class="wind" id="wind-speed">15 km/h</p>
+              <p>Wind Speed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const apiKey = '26427ccf2caeb601a539998da9f46f65';
+      
+      document.getElementById('search-btn').addEventListener('click', () => {
+        const city = document.getElementById('city-input').value;
+        getWeatherData(city);
+      });
+
+      async function getWeatherData(city) {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`);
+        const data = await response.json();
+        console.log(data);
+
+        // Update the weather details in the DOM
+        document.getElementById('city-name').textContent = data.name;
+        document.getElementById('temperature').textContent = `${data.main.temp}°C`;
+        document.getElementById('humidity').textContent = `${data.main.humidity}%`;
+        document.getElementById('wind-speed').textContent = `${data.wind.speed} km/h`;
+
+        // Update weather icon based on weather conditions
+        const weatherCondition = data.weather[0].main.toLowerCase();
+        updateWeatherIcon(weatherCondition);
+      }
+
+      function updateWeatherIcon(condition) {
+        const iconElement = document.getElementById('weather-icon');
+        if (condition === 'clear') {
+          iconElement.src = 'images/clear.png';
+        } else if (condition === 'clouds') {
+          iconElement.src = 'images/clouds.png';
+        } else if (condition === 'rain') {
+          iconElement.src = 'images/rain.png';
+        } else if (condition === 'snow') {
+          iconElement.src = 'images/snow.png';
+        } else {
+          iconElement.src = 'images/default.png';
+        }
+      }
+    </script>
+  </body>
+</html>
